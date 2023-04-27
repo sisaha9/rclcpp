@@ -72,15 +72,15 @@ LifecycleNode::create_subscription(
   const rclcpp::SubscriptionOptionsWithAllocator<AllocatorT> & options,
   typename MessageMemoryStrategyT::SharedPtr msg_mem_strat)
 {
-  auto sub = rclcpp::create_subscription<MessageT>(
+  auto reg_subscription = rclcpp::create_subscription<MessageT>(
     *this,
     topic_name,
     qos,
     std::forward<CallbackT>(callback),
     options,
     msg_mem_strat);
-  this->add_managed_entity(sub);
-  return sub;
+  this->add_managed_entity(reg_subscription);
+  return reg_subscription;
 }
 
 template<typename DurationRepT, typename DurationT, typename CallbackT>

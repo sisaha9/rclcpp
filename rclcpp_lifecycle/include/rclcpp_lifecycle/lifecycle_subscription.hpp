@@ -24,6 +24,7 @@
 #include "rclcpp/subscription.hpp"
 #include "rclcpp/subscription_options.hpp"
 #include "rclcpp/qos.hpp"
+#include "rclcpp/any_subscription_callback.hpp"
 
 #include "rclcpp_lifecycle/managed_entity.hpp"
 
@@ -53,7 +54,7 @@ class LifecycleSubscription : public SimpleManagedEntity,
 public:
   RCLCPP_SMART_PTR_DEFINITIONS(LifecycleSubscription)
 
-  using MessageAllocTraits = rclcpp::allocator::AllocRebind<MessageT, Alloc>;
+  using MessageAllocTraits = rclcpp::allocator::AllocRebind<MessageT, AllocatorT>;
   using MessageAlloc = typename MessageAllocTraits::allocator_type;
   using MessageDeleter = rclcpp::allocator::Deleter<MessageAlloc, MessageT>;
   using MessageUniquePtr = std::unique_ptr<MessageT, MessageDeleter>;
@@ -63,10 +64,10 @@ public:
     const rosidl_message_type_support_t & type_support_handle,
     const std::string & topic_name,
     const rclcpp::QoS & qos,
-    AnySubscriptionCallback<MessageT, AllocatorT> callback,
+    rclcpp::AnySubscriptionCallback<MessageT, AllocatorT> callback,
     const rclcpp::SubscriptionOptionsWithAllocator<AllocatorT> & options,
     typename MessageMemoryStrategyT::SharedPtr message_memory_strategy,
-    SubscriptionTopicStatisticsSharedPtr subscription_topic_statistics = nullptr)
+    std::shared_ptr<rclcpp::topic_statistics::SubscriptionTopicStatistics<ROSMessageT>> subscription_topic_statistics = nullptr)
   : rclcpp::Subscription<MessageT, AllocatorT, SubscribedT, ROSMessageT, MessageMemoryStrategyT>(node_base, type_support_handle, topic_name, qos, callback, options, message_memory_strategy, subscription_topic_statistics),
     should_log_(true),
     logger_(rclcpp::get_logger("LifecycleSubscription"))
