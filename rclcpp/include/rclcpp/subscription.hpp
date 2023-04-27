@@ -321,7 +321,7 @@ public:
     return message_memory_strategy_->borrow_serialized_message();
   }
 
-  void
+  virtual void
   handle_message(
     std::shared_ptr<void> & message,
     const rclcpp::MessageInfo & message_info) override
